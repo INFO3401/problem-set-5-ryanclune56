@@ -1,0 +1,320 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[163]:
+
+
+# 2
+# International Organization: The WHO (World Health Organization)
+# The WHO by its name is responsible for world health matters and handles issues such as COVID 19. 
+# I would imagine the data from the WHO to be very accurate as it is of very high importance that they
+# provide accurate data. The WHO has perhaps been one of the leading credible sources for information on the virus 
+# since the outbreak started. 
+
+# Government Organization: China CDC
+# In short, the China CDC is the equivalent of the CDC here in the United States. 
+# I would imagine this data to be fairly accurate. However, I would verify data from the China CDC with another 
+# source, as there were allegations of China intentionally under-reporting cases during the outbreak. 
+
+# News Organization: BNO News
+# BNO News is a Dutch news corporation. I would imagine that the data from this news outlet to be accurate, 
+# however in considering good data analytics practices it would not hurt to double check the information they provide
+# against another source. 
+
+
+# In[164]:
+
+
+import pandas as pd
+import pprint as pprint
+import matplotlib.pyplot as plt
+import datetime as dt
+pd.options.display.max_columns
+
+
+# In[190]:
+
+
+import seaborn as sns
+import scipy.stats
+import statsmodels.formula.api 
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[165]:
+
+
+# opening the global cases file
+globalCases = pd.read_csv("time-series-global-cases.csv")
+globalCases
+
+
+# In[166]:
+
+
+# 3
+def loadAndCleanData(file):
+    pandaFile = pd.read_csv(file)
+    pandaFile.fillna(value = 0, inplace = True)
+    return pandaFile
+
+
+# In[167]:
+
+
+# 3
+# running loadAndCleanData on the global cases file
+globalCasesCleaned = loadAndCleanData("time-series-global-cases.csv")
+globalCasesCleaned
+
+
+# In[168]:
+
+
+# 4,    # 6
+def correctDateFormat(data):
+    data = data.melt(id_vars=data.columns[0:4], var_name="Date", value_name="Confirmed")
+    data["Date"] = pd.to_datetime(data["Date"])
+    return data
+# aded so that there is a datetime object  
+
+
+# In[169]:
+
+
+# 5
+# running function on global cases file
+globalCasesComplete = correctDateFormat(globalCasesCleaned)
+globalCasesComplete
+
+
+# In[170]:
+
+
+# 7
+# loading in the global deaths file
+globalDeaths = pd.read_csv("global-deaths.csv")
+globalDeaths
+
+
+# In[171]:
+
+
+# 7
+# loading in the global recovered file
+globalRecovered = pd.read_csv("global-recoveries.csv")
+globalRecovered
+
+
+# In[172]:
+
+
+# 7
+# cleaning global deaths file
+globalDeathsCleaned = loadAndCleanData("global-deaths.csv")
+globalDeathsCleaned
+
+
+# In[173]:
+
+
+def correctDateFormatDeaths(data):
+    data = data.melt(id_vars=data.columns[0:4], var_name="Date", value_name="Deaths")
+    data["Date"] = pd.to_datetime(data["Date"])
+    return data
+
+
+# In[174]:
+
+
+# 7 
+# correcting date format on global deaths
+globalDeathsComplete = correctDateFormatDeaths(globalDeathsCleaned)
+globalDeathsComplete
+
+
+# In[175]:
+
+
+# 7
+# cleaning global recovery data
+globalRecoveredCleaned = loadAndCleanData("global-recoveries.csv")
+globalRecoveredCleaned
+
+
+# In[176]:
+
+
+def correctDateFormatRecovered(data):
+    data = data.melt(id_vars=data.columns[0:4], var_name="Date", value_name="Recovered")
+    data["Date"] = pd.to_datetime(data["Date"])
+    return data
+
+
+# In[177]:
+
+
+# 7
+# correcting date format on global recoveries
+globalRecoveredComplete = correctDateFormatRecovered(globalRecoveredCleaned)
+globalRecoveredComplete
+
+
+# In[178]:
+
+
+mergeData(globalCasesComplete, globalDeathsComplete, "Deaths")
+
+
+# In[179]:
+
+
+firstMerge = mergeData(globalCasesComplete, globalDeathsComplete, "Deaths")
+firstMerge
+
+
+# In[180]:
+
+
+#globalData = mergeData(globalCasesComplete, globalRecoveredComplete, "Recovered")
+globalData = mergeData(firstMerge, globalRecoveredComplete, "Recovered")
+
+
+# In[181]:
+
+
+globalData
+
+
+# In[184]:
+
+
+# 10
+def plotTimeline(data, time, val):
+    sns.lineplot(data=data, x=time, y=val)
+    plt.show
+
+
+# In[191]:
+
+
+# 11
+plotTimeline(globalData, "Date", "Confirmed")
+
+
+# In[192]:
+
+
+# 11
+plotTimeline(globalData, "Date", "Deaths")
+
+
+# In[193]:
+
+
+# 11
+plotTimeline(globalData, "Date", "Recovered")
+
+
+# In[194]:
+
+
+# 12
+def plotMultipleTimeLines(data, time, val, cat):
+    sns.lineplot(data=data, x=time, y=val, hue=cat)
+    plt.show()
+
+
+# In[195]:
+
+
+# 13
+plotMultipleTimeLines(globalData, "Date", "Recovered", "Deaths")
+plotMultipleTimeLines(globalData, "Date", "Confirmed", "Deaths")
+plotMultipleTimeLines(globalData, "Date", "Confirmed", "Recovered")
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[182]:
+
+
+globalRecoveredComplete
+globalDeathsComplete
+globalCasesComplete 1
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
